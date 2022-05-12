@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Blind Upload - Download and Decrypt</title>
+    <link rel='stylesheet' href='/css/simple.css' />
+    <link rel='stylesheet' href='/css/style.css' />
+    <script type="module" src="/js/modules/download.js"></script>
+  </head>
+  <body>
+    <h1><a href="/upload.html">Blind Upload</a></h1>
+    <small>(Early access beta release v0.1.6.)</small>
+    <h2>Download and Decrypt</h2>
+    <div id="code-required">
+      <p>
+        A 25-letter code is required to decrypt the downloaded file(s).
+      </p>
+      <p>
+        The person who sent you this link may have provided this code over the phone, by SMS, or by
+        some other method.  If you do not have the code, please contact the sender of this link.
+      </p>
+      <div class="code-input">
+        <input autofocus="autofocus" onkeyup="moveToNext(this, 'code1');" type="text" id="code0" autocomplete="off" pattern="[0-9A-HJ-NP-TV-Za-hj-np-tv-z]{5}" maxlength="5">
+        -
+        <input onkeyup="moveToNext(this, 'code2');" type="text" id="code1" autocomplete="off" pattern="[0-9A-HJ-NP-TV-Za-hj-np-tv-z]{5}" maxlength="5">
+        -
+        <input onkeyup="moveToNext(this, 'code3');" type="text" id="code2" autocomplete="off" pattern="[0-9A-HJ-NP-TV-Za-hj-np-tv-z]{5}" maxlength="5">
+        -
+        <input onkeyup="moveToNext(this, 'code4');" type="text" id="code3" autocomplete="off" pattern="[0-9A-HJ-NP-TV-Za-hj-np-tv-z]{5}" maxlength="5">
+        -
+        <input onkeyup="moveToNext(this, 'code-complete');" type="text" id="code4" autocomplete="off" pattern="[0-9A-HJ-NP-TV-Za-hj-np-tv-z]{5}" maxlength="5">
+      </div>
+      <button id="code-complete" onclick="codeComplete()">Submit</button>
+    </div>
+    <div id="file-list">
+    </div>
+    <div id="error-report">
+    </div>
+    <footer>
+      No cookies, no tracking, no logins.
+    </footer>
+  </body>
+</html>

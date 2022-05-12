@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Blind Upload</title>
+    <link rel='stylesheet' href='/css/simple.css' />
+    <link rel='stylesheet' href='/css/style.css' />
+    <script src="/js/qrcode.js"></script>
+    <script type="module" src="/js/modules/upload.js"></script>
+  </head>
+  <body onload="document.getElementById('input').focus();">
+    <h1><a href="/upload.html">Blind Upload</a></h1>
+    <small>(Early access beta release v0.1.6.)</small>
+    <div id="browse">
+      <center>
+      <h3>Encrypt and upload file(s) now...</h3>
+      <input type="file" id="input" multiple="true" autofocus="autofocus">
+      <p>...or <a target="_" href="/about.html">read about Blind Upload</a> first.</p>
+      </center>
+    </div>
+    <div id="progress">
+      <h2>Progress...</h2>
+    </div>
+    <br>
+    <div id="completed">
+      <h2>Done!</h2>
+      <p>
+        Anyone can use the link (or QR code) below to download and decrypt the file(s) you've just
+        encrypted and uploaded.  (The key is the
+        <a href="https://en.wikipedia.org/wiki/URI_fragment" target="_">fragment</a> after the "#",
+        which is never sent to Blind&nbsp;Upload.)
+      </p>
+      <div id="completed-long-link"></div>
+      <center>
+        <div id="long-link-qrcode"></div>
+      </center>
+      <br>
+      <details>
+        <summary>Split-Key for Telephone Use (Advanced)</summary>
+        <p>
+          For extra security, the short link below contains only the first half of the key.
+        </p>
+        <div id="completed-short-link"></div>
+        <center>
+          <div id="short-link-qrcode"></div>
+        </center>
+        <br>
+        <p>
+          When that link is used, the recipient is prompted to enter the second half of the key
+          (now in a longer, telephone-friendly, format):
+        </p>
+        <br>
+        <div id="completed-short-code"></div>
+        <br>
+      </details>
+    </div>
+    <footer>
+      No cookies, no tracking, no logins.
+    </footer>
+  </body>
+</html>

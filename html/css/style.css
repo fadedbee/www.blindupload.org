@@ -1,0 +1,41 @@
+/*
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+*/
+.code-input>input {
+  font: 14px 'Courier New', Courier, monospace;
+  text-transform: uppercase;
+  width: 4.5em;
+}
+
+.short-code {
+  font: 36px 'Courier New', Courier, monospace;
+}
+
+#file-list {
+  display: none;
+}
+
+#code-required {
+  display: none;
+}
+
+#progress {
+  display: none;
+}
+
+#completed {
+  display: none;
+}
+
+small {
+  margin-top: -30px;
+  margin-bottom: 10px;
+}

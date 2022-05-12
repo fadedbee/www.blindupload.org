@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Blind Upload</title>
+    <link rel='stylesheet' href='/css/simple.css' />
+    <link rel='stylesheet' href='/css/style.css' />
+  </head>
+  <body>
+    <h1><a class="no-link" href="/upload.html">Blind Upload</a></h1>
+    <small>(Early access beta release v0.1.6.)</small>
+    <div id="blurb">
+      <p>
+        Blind Upload is a non-profit service which allows you to encrypt and upload large files to
+        the Internet, for other people to download and decrypt in their browser.
+      </p>
+      <p>
+        Blind Upload remains ignorant of your files' content by performing encryption in your
+        browser and by never uploading your keys.  (Keys are encoded as URL
+        <a href="https://en.wikipedia.org/wiki/URI_fragment" target="_">fragments</a> such as
+        https://<wbr>www.blindupload.org/<wbr><b>#WL9IdULNh5h3tb7PISPWdu<wbr>X3nNp9ghYWpZa91L5hrwM</b>
+        which are not sent to the server when a page is requested.) 
+      </p>
+      <p>
+        You might want to use Blind Upload for a multi-megabyte file that is too large to be an
+        email attachment.  Or perhaps for an attachment that is being blocked by a mail server.
+      </p>
+      <p>
+        Other services, such as Dropbox, Google Drive, iCloud and Office 365, upload your files
+        without encryption and they can read the contents.  They wouldn't run automated tools
+        that analyse your files, or routinely hand over your data to third parties without warrants,
+        would they?
+      </p>
+      <h3>How do I use Blind Upload?</h3>
+      <p>
+        Just click the "Browse..." button on the <a href="/upload.html">upload page</a> and choose
+        one or more files from your computer.
+      </p>
+      <p>
+        Your browser will generate a cryptographically secure random key and use that to encrypt
+        your files before uploading them to our servers.
+      </p>
+      <p>
+        This random key will then be displayed as a link.  Send this link to the intended recipient.
+      </p>
+      <p>
+        Or you can install and use <a href="https://github.com/fadedbee/bup">bup</a>.
+      </p>
+      <p>
+        We store encrypted files for seven days.  After this time, a downloader will be informed
+        that the link has expired.
+      </p>
+      <h3>Who pays for this service?</h3>
+      <p>
+        If this service becomes popular, we will need to ask for donations.
+      </p>
+      <p>
+        If that doesn't work, we'll need to find a non-Javascript advertising service to pay for
+        storage and bandwidth.  (We can't prove that a Javascript advert, or an advertising
+        service, won't try to steal links and keys.)
+      </p>
+      <h3>Should you trust this website?</h3>
+      <p>
+        No, This website is just a convenience and a proof-of-concept.  You don't know us from
+        Adam.
+      </p>
+      <p>
+        You should install <a href="https://github.com/fadedbee/bup">bup</a> and use it instead of
+        this website.  You can even inspect the code, and compile it yourself, for complete peace of
+        mind.
+      </p>
+      <p>
+        If we turned evil, we could serve malicious JavaScript and steal your files' keys,
+        negating the whole point of this service.  But we could not compromise the security of an
+        executable already on your machine.
+      </p>
+      <p>
+        To reassure those who do want to use this website, we serve all of our JavaScript, HTML
+        and CSS in fully readable form so that it is easy for other software developers to
+        inspect.
+      </p>
+      <p>
+        (We are actively looking for a way to sign our HTML and Javascript with our public key,
+        and make browsers require that this has been done.  This would probably require a new
+        standard.  That would provide non-repudiation of any evil behaviour, i.e. you could prove
+        that malicious content came from us.  Current HTTPS does not allow you to prove to anyone,
+        other than yourself, that a particular file has been downloaded from a specific website.)
+      </p>
+      <h3>Technically, how does it work?</h3>
+      <p>
+        Our servers know nothing of files.  To them, everything is just an encrypted block of 1 MB
+        or less.
+      </p>
+      <p>
+        From the browser's perspective, each upload consists of data blocks, and an index block.
+        Data blocks contain the encrypted contents of the files.  The index block contains the
+        files' names and the keys of all of the data blocks, and is also encrypted.  It is the
+        index block's key which is displayed after uploading.
+      </p>
+      <p>
+        Blocks are identified by truncated
+        <a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function" target="_">hashes</a>
+        of their keys.  Knowing a block's key, you can:
+      </p>
+      <ul>
+        <li>generate the block ID under which it is stored,</li>
+        <li>use the block ID to downloaded the encrypted block, and</li>
+        <li>use the key to decrypt the data from the encrypted block.</li>
+      </ul>
+      <p>
+        The download procedure does this first for the index block, and then uses the keys therein
+        to retrieve and decrypt all of the files' data blocks.
+      </p>
+      <p>
+        This lets you store and retreive data without Blind Upload being able to decrypt it.
+      </p>
+      <p>
+        A link fragment's forty-three base-62 digits encode 256.03 bits of information.  This is
+        sufficient for a single-use AES-256-GCM key.  (We don't need to store the IV as only one
+        index block is ever encoded with each key.)
+      </p>
+      <p>
+        (A split key is divided between the link and the telephone code.  The link's twenty-two 
+        base-62 digits encode 129.99 bits.  The code's twenty-five base-33 digits encode 126.10
+        bits.  We exclude the letters "O" and "I", from the base-33 alphabet, to prevent confusion
+        with "0" and "1" and we exclude "U" to prevent accidental profanity.)
+      </p>
+      <h3>Contact Us</h3>
+      <p>
+        Please email <a href="mailto:blindupload@fadedbee.com">blindupload@fadedbee.com</a> with
+        your comments and questions.
+      </p>
+    </div>
+    <footer>
+      No cookies, no tracking, no logins.
+    </footer>
+  </body>
+</html>
