@@ -97,6 +97,11 @@
         index block's key which is displayed after uploading.
       </p>
       <p>
+        Keys for blocks are created in the browser, using 
+        <pre>crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, ...</pre>
+        and are never sent to the server.
+      </p>
+      <p>
         Blocks are identified by truncated
         <a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function" target="_">hashes</a>
         of their keys.  Knowing a block's key, you can:
