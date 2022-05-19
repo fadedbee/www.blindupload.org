@@ -13,6 +13,8 @@ const inputElement = document.getElementById("input");
 
 inputElement.addEventListener("change", handleFiles, false);
 
+const MAX_TRIES = 10;
+
 window.copy_to_clipboard = function copy_to_clipboard(selector) {
   let url = document.querySelector(selector).href;
   console.log("url", url);
@@ -176,18 +178,27 @@ class UploadableFile {
 
   async upload() {
     console.log("upload()");
-    for (var i = 0; i < this.numBlocks; ++i) {
+    for (var j = 0; j < MAX_TRIES; j++) {
+      for (var i = 0; i < this.numBlocks; ++i) {
+        console.log("parts", this.parts.join(''));
+        if (this.parts[i] === PART_LOADED || this.parts[i] === PART_ERROR) {
+          this.parts[i] = PART_UPLOADING;
+          this.updateGui();
+          await pause(10);
+          this.parts[i] = await this.uploadBlock(i);
+          this.updateGui();
+          await pause(10);
+        }
+      }
       console.log("parts", this.parts.join(''));
-      if (this.parts[i] === PART_LOADED) {
-        this.parts[i] = PART_UPLOADING;
-        this.updateGui();
-        await pause(10);
-        this.parts[i] = await this.uploadBlock(i);
-        this.updateGui();
-        await pause(10);
+    }
+    // check for successful upload (after reries)
+    for (var i = 0; i < this.numBlocks; ++i) {
+      if (this.parts[i] != PART_UPLOADED) {
+        return false;
       }
     }
-    console.log("parts", this.parts.join(''));
+    return true;
   }
 
   async uploadBlock(blockNum) {
@@ -236,9 +247,19 @@ function uploadBlock(block, url) {
   const xhr = new XMLHttpRequest;
 
   const promise = new Promise((resolve, reject) => {
-    xhr.onloadend = () => {
-      console.log("block uploaded", url);
-      resolve();
+    xhr.onloadend = res => {
+      console.log("block uploaded", url, res);
+      if (res.target.status < 200 || res.target.status > 299) {
+        console.log("block upload error");
+        try { // how can resolve fail?
+          console.log("res.target.response", res.target.response);
+          reject("foo");//res.target.response);
+        } catch (e) {
+          console.log("error inside promise's reject() ???", e);
+        }
+      } else {
+        resolve();
+      }
     };
 
     xhr.onerror = (e) => {
@@ -279,7 +300,10 @@ class Uploader {
     for (let file of this.files) {
       await file.read();
       await pause(10);
-      await file.upload();
+      const res = await file.upload();
+      if (!res) {
+        return alert("File upload failed.  Please press F5 and retry.");
+      }
       console.log("File upload complete.");
       await pause(10);
     }
@@ -308,8 +332,17 @@ class Uploader {
     const idArr = new Uint8Array(await crypto.subtle.digest('SHA-256', indexKey.uint8Array));
     const blockId = BlockId.fromUint8Array(idArr);
 
+    console.log("uploading index block...");
+
     // upload index block
-    await uploadBlock(ciphertext, cachePrefix() + "/upload/block/" + blockId.upperAsBase62);
+    for (var i = 0; i < MAX_TRIES; ++i) {
+      const res = !await uploadBlock(ciphertext, cachePrefix() + "/upload/block/" + blockId.upperAsBase62);
+      if (res) break;
+      if (i == MAX_TRIES) {
+        return alert("Index upload failed.  Please press F5 and retry.");
+      }
+      await pause(100);
+    }
 
     // show keys
     const longUrl = wwwPrefix() + "/#" + indexKey.base62;

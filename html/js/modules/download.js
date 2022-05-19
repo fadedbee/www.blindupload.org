@@ -87,6 +87,20 @@ window.codeComplete = async () => {
 };
 
 const SLASH_HTML = utf8toBuf("</html>\n");
+const MAX_TRIES = 10;
+
+async function tryDownloadBlock(url) {
+  var finalErr = null;
+  for (var i = 0; i < MAX_TRIES; ++i) {
+    try {
+      return await downloadBlock(url);
+    } catch (err) {
+      finalErr = err;
+      continue;
+    }
+  }
+  throw finalErr;
+}
 
 // This function returns a promise, so it should be called with await.
 function downloadBlock(url) {
@@ -156,7 +170,7 @@ async function downloadIndex(key) {
 
     const url = urlPrefix + blockId.upperAsBase62;
     console.log("url", url);
-    const block = await downloadBlock(url);
+    const block = await tryDownloadBlock(url);
     console.log("block", block);
     const plaintext = await key.decrypt(block)
     console.log("plaintext", plaintext);
@@ -207,7 +221,7 @@ async function downloadFile(num) {
       const blockId = await BlockId.fromHashOfKey(key);
 
       const url = urlPrefix + blockId.upperAsBase62;// + ".block";
-      const block = await downloadBlock(url);
+      const block = await tryDownloadBlock(url);
 
       // TODO: check length of dowloaded block, it should be BLOCK_SIZE for all but the last
       // TODO: check the hash of the downloaded block
